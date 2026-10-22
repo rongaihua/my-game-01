@@ -164,7 +164,8 @@ htmlcov/
 ._*
 
 # Custom folder icons
-Icon
+Icon
+
 
 # Volume root files
 .DocumentRevisions-V100
@@ -234,3 +235,5 @@ x86/
 
 # Publish Web Output
 *.[Pp]ublish.xml
+!/Packages/my-game-libra
+!/Packages/my-game-libra/**

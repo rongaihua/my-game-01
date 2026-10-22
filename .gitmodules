@@ -1,0 +1,3 @@
+[submodule "Packages/my-game-libra"]
+	path = Packages/my-game-libra
+	url = https://github.com/rongaihua/my-game-libra.git
