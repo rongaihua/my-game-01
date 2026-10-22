@@ -1,0 +1,14 @@
+---
+description: 改完代码后用 uloop compile-check 编译
+alwaysApply: true
+---
+
+# 改完代码要编译
+
+改过 `.cs` 之后，结束前在本工程目录执行：
+
+```bash
+uloop compile-check --project-path F:\Myself\Projects\LargeScaleBattle
+```
+
+不要用 `Unity.exe -batchmode`，也不要 `dotnet build` 编 Unity 的 `.csproj`。本机这条命令的说明在 `C:\Users\30604\.cursor\rules\verify-build-after-changes.mdc`。有错误就改到 0 错误再停。
