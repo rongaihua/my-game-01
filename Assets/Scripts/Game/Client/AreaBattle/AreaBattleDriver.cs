@@ -20,6 +20,11 @@ namespace LargeScaleBattle
     {
 
         /// <summary>
+        /// 通用按钮点击声，放在游戏的 Res/audio/sound 下。
+        /// </summary>
+        private const string ButtonClick = "Assets/Res/audio/sound/btn_click.mp3";
+
+        /// <summary>
         /// 红、蓝、黄、绿的底色。
         /// </summary>
         private static readonly Color[] RegionColors =
@@ -86,7 +91,89 @@ namespace LargeScaleBattle
                 mView.Cells[i].GetComponent<Button>().onClick.AddListener(() => mMatch.PickCell(captured));
             }
 
+            BindButtonSounds();
             ApplyPhase();
+        }
+
+        /// <summary>
+        /// 给带图的按钮和全部开关挂上通用点击声。已经单独配过音效的不再改。
+        /// </summary>
+        private void BindButtonSounds()
+        {
+            var buttons = GetComponentsInChildren<Button>(true);
+            for (var i = 0; i < buttons.Length; i++)
+            {
+                BindButtonSound(buttons[i]);
+            }
+
+            var toggles = GetComponentsInChildren<Toggle>(true);
+            for (var i = 0; i < toggles.Length; i++)
+            {
+                BindToggleSound(toggles[i]);
+            }
+        }
+
+        /// <summary>
+        /// 给一个按钮挂上通用点击声。没有图片，或图片是空的，不播。
+        /// </summary>
+        /// <param name="button">要处理的按钮。</param>
+        private void BindButtonSound(Button button)
+        {
+            if (button == null)
+            {
+                return;
+            }
+
+            var listener = button.GetComponent<ButtonSoundListener>();
+            if (listener != null && !listener.IsCommon)
+            {
+                return;
+            }
+
+            var image = button.GetComponentInChildren<Image>(true);
+            if (image == null || image.sprite == null)
+            {
+                if (listener != null)
+                {
+                    Destroy(listener);
+                }
+
+                return;
+            }
+
+            if (listener == null)
+            {
+                listener = button.gameObject.AddComponent<ButtonSoundListener>();
+                listener.IsCommon = true;
+            }
+
+            listener.SoundPath = ButtonClick;
+        }
+
+        /// <summary>
+        /// 给一个开关挂上通用点击声。
+        /// </summary>
+        /// <param name="toggle">要处理的开关。</param>
+        private void BindToggleSound(Toggle toggle)
+        {
+            if (toggle == null)
+            {
+                return;
+            }
+
+            var listener = toggle.GetComponent<ButtonSoundListener>();
+            if (listener != null && !listener.IsCommon)
+            {
+                return;
+            }
+
+            if (listener == null)
+            {
+                listener = toggle.gameObject.AddComponent<ButtonSoundListener>();
+                listener.IsCommon = true;
+            }
+
+            listener.SoundPath = ButtonClick;
         }
 
         /// <summary>
@@ -111,11 +198,17 @@ namespace LargeScaleBattle
         }
 
         /// <summary>
-        /// 用输入的名字创建房间。
+        /// 用输入的名字创建房间。开成后换一首背景音乐。
         /// </summary>
         private void OnHost()
         {
             mMatch.Host(mView.NameInput.text);
+            if (mMatch.Phase != AreaPhase.Room || AppEntry.Current == null)
+            {
+                return;
+            }
+
+            AppEntry.Current.SwitchMusic();
         }
 
         /// <summary>
