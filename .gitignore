@@ -237,3 +237,5 @@ x86/
 *.[Pp]ublish.xml
 !/Packages/my-game-libra
 !/Packages/my-game-libra/**
+!/Packages/manifest.json
+!/Packages/packages-lock.json
