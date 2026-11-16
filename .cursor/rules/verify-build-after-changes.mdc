@@ -1,0 +1,39 @@
+---
+description: 修改代码后必须自行编译（跨项目，本机全局强制）
+alwaysApply: true
+---
+
+# 修改后自行编译（强制，勿再问用户）
+
+改完逻辑或代码后、回复「完成」之前，**必须在本机编译一次**。  
+每个工程都执行。不能只看 IDE linter / ReadLints，不能等用户去 Unity 点 Console，不能用 MCP 鉴权绕远路。
+
+**用户已多次强调：换工程也不要再问怎么查编译。本文件就是全局约定。**
+
+## Unity 工程（唯一正路）
+
+在对应 Unity 工程目录执行（或加 `--project-path`）：
+
+```bash
+uloop compile-check --project-path <Unity工程目录>
+```
+
+本机 `uloop`：`C:\Users\30604\AppData\Local\Programs\uloop\bin\uloop.exe`
+
+### 硬性要求
+
+- **只用** `uloop compile-check`。不要用 `uloop compile`（会拉 GitHub runner / 连编辑器，慢）。
+- **不要**用 `dotnet build` 编 Unity 的 `.csproj`。
+- **不要**靠扫 `Editor.log` 当主手段（日志易陈旧、行号对不上当前磁盘）；仅当 `uloop` 不可用时才可作兜底。
+- **不要**为查编译去认证 Unity MCP / 浏览器 / Computer Use。
+- 本机编辑器在 `F:\ProgramFiles\Editor\Unity.exe`（不在 Hub 默认目录）。`compile-check` 找不到时，把 `%LOCALAPPDATA%\Unity\Hub\Editor\<ProjectVersion>\Editor` 联到该目录。
+- 有错误就改完再编，直到 **0 error**。原有 warning 记一笔即可，不挡完成。
+- 这次编译不进正在开着的编辑器。
+
+### 回复要求
+
+交代码时用一两句写明：已跑 `uloop compile-check`、结果是 0 error 或还剩哪些 error。
+
+## 非 Unity（如 Room）
+
+`dotnet build` 对应的 `.sln` / `.csproj`。有错误则修复后重编。
